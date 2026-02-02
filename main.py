@@ -1,7 +1,7 @@
 import streamlit as st
 import os  
 
-# 1. الحفاظ على قسم استيراد المكتبات والتركيب التلقائي كما هو في الكود الأصلي
+# 1. قسم استيراد المكتبات والتركيب التلقائي (نفس كودك الأصلي تماماً)
 try:  
     import requests  
     import binascii  
@@ -35,53 +35,32 @@ import datetime
 from MedoSigner import Argus, Gorgon, md5, Ladon  
 import threading
 
-# --- إعدادات الواجهة المرعبة جداً ---
-st.set_page_config(page_title="GHOST FULL SOURCE v4", page_icon="☠️", layout="wide")
+# ---------------------------------------------------------
+# واجهة Streamlit بتصميم مرعب ومظلم
+# ---------------------------------------------------------
+st.set_page_config(page_title="GHOST FULL SOURCE - NO LIMIT", page_icon="👹", layout="wide")
 
 st.markdown("""
     <style>
-    /* خلفية سوداء بالكامل وتنسيق مرعب */
-    .stApp {
-        background-color: #000000;
-        color: #ff0000;
-        font-family: 'Courier New', Courier, monospace;
+    .stApp { background-color: #000000; color: #ff0000; font-family: 'Courier New', monospace; }
+    .stTextInput>div>div>input, .stTextArea>div>div>textarea {
+        background-color: #050505 !important; color: #ff0000 !important; border: 1px solid #ff0000 !important;
     }
-    /* تنسيق مربعات الإدخال */
-    .stTextInput>div>div>input, .stTextArea>div>div>textarea, .stSelectbox>div>div>div {
-        background-color: #0d0d0d !important;
-        color: #ff0000 !important;
-        border: 1px solid #ff0000 !important;
-        border-radius: 0px !important;
-    }
-    /* تنسيق الأزرار */
     .stButton>button {
-        background-color: #660000;
-        color: white;
-        border: 2px solid #ff0000;
-        font-weight: bold;
-        width: 100%;
-        transition: 0.3s;
+        background: linear-gradient(45deg, #800000, #ff0000); color: white; border: none;
+        width: 100%; font-weight: bold; height: 3em; box-shadow: 0 0 15px #ff0000;
     }
-    .stButton>button:hover {
-        background-color: #ff0000;
-        color: black;
-        box-shadow: 0 0 20px #ff0000;
-    }
-    h1, h2, h3 {
-        color: #ff0000 !important;
-        text-shadow: 3px 3px 10px #ff0000;
-        text-align: center;
-    }
-    /* شريط التمرير */
-    ::-webkit-scrollbar { width: 5px; }
-    ::-webkit-scrollbar-track { background: #000; }
-    ::-webkit-scrollbar-thumb { background: #ff0000; }
+    h1 { text-shadow: 0 0 20px #ff0000; text-align: center; font-size: 60px; }
+    .css-1offfwp { background-color: #000 !important; }
+    .report-card { border: 2px solid #ff0000; padding: 20px; border-radius: 10px; background: #080808; }
     </style>
     """, unsafe_allow_html=True)
 
-st.write("<h1>💀 GHOST REPORTING SYSTEM: UNSTOPPABLE 💀</h1>", unsafe_allow_html=True)
+st.markdown("<h1>👹 GHOST SYSTEM: UNSTOPPABLE 👹</h1>", unsafe_allow_html=True)
 
-# 2. قسم كافة الدوال الأصلية (بدون حذف أي حرف أو دالة)
+# ---------------------------------------------------------
+# كافة الدوال التقنية الأصلية (بدون حذف أي حرف)
+# ---------------------------------------------------------
 
 def sign(params, payload: str = None, sec_device_id: str = "", cookie: str or None = None, aid: int = 1233, license_id: int = 1611921764, sdk_version_str: str = "2.3.1.i18n", sdk_version: int =2, platform: int = 19, unix: int = None):  
     x_ss_stub = md5(payload.encode('utf-8')).hexdigest() if payload != None else None  
@@ -144,80 +123,83 @@ def report_video_fast(sessionid, idVd, UserId, report_type, proxy=None, country=
     except:
         return False
 
-# 3. نظام الإرسال المستمر والتحكم بالواجهة (Streamlit Session)
-if 'attack_running' not in st.session_state: st.session_state.attack_running = False
+# ---------------------------------------------------------
+# نظام التحكم والتشغيل المستمر (Threading & Session State)
+# ---------------------------------------------------------
+
+if 'running' not in st.session_state: st.session_state.running = False
 if 'ok' not in st.session_state: st.session_state.ok = 0
 if 'bad' not in st.session_state: st.session_state.bad = 0
 
-# 4. واجهة الإدخال
-with st.sidebar:
-    st.header("⚙️ ATTACK PARAMETERS")
-    target_user = st.text_input("👤 يوزر المستخدم المستهدف")
-    report_opt = st.selectbox("🚫 نوع البلاغ المرعب", [
-        "90087 (محتوى جنسي)", "90044 (عنف)", "90045 (تحرش)", 
-        "90053 (احتيال وغش)", "90055 (تقليد شخصية)"
-    ])
-    
-    REPORT_MAP = {
-        "90087 (محتوى جنسي)": {"reason": "90087", "category": "porn"},
-        "90044 (عنف)": {"reason": "90044", "category": "violence"},
-        "90045 (تحرش)": {"reason": "90045", "category": "hate"},
-        "90053 (احتيال وغش)": {"reason": "90053", "category": "scam"},
-        "90055 (تقليد شخصية)": {"reason": "90055", "category": "impersonation"}
-    }
-
-col1, col2, col3 = st.columns(3)
-with col1:
-    sessions_txt = st.text_area("🔑 لصق السيزنات (واحد لكل سطر)", height=300)
-with col2:
-    proxies_txt = st.text_area("🌐 لصق البروكسيات (IP:Port)", height=300)
-with col3:
-    links_txt = st.text_area("🔗 لصق روابط الفيديوهات", height=300)
-
-# دالة التشغيل المستمر (Loop)
-def run_infinite_attack(sessions, links, r_data, proxies):
-    while st.session_state.attack_running:
+def continuous_loop(sessions, links, r_data, proxies):
+    while st.session_state.running:
         for link in links:
-            if not st.session_state.attack_running: break
-            vd_id, u_id, u_name = get_video_info(link)
-            if vd_id:
+            if not st.session_state.running: break
+            vid, uid, user = get_video_info(link)
+            if vid:
                 for sess in sessions:
-                    if not st.session_state.attack_running: break
+                    if not st.session_state.running: break
                     prx = random.choice(proxies) if proxies else None
-                    if report_video_fast(sess, vd_id, u_id, r_data, prx):
+                    if report_video_fast(sess, vid, uid, r_data, prx):
                         st.session_state.ok += 1
                     else:
                         st.session_state.bad += 1
-                    time.sleep(0.01) # سرعة الهجوم
+                    time.sleep(0.01) # أقصى سرعة
 
-# أزرار التحكم
-st.markdown("<br>", unsafe_allow_html=True)
-b1, b2 = st.columns(2)
+# ---------------------------------------------------------
+# واجهة المستخدم الرئيسية
+# ---------------------------------------------------------
 
-if b1.button("🔥 إطلاق الهجوم بدون توقف"):
-    if sessions_txt and links_txt:
-        st.session_state.attack_running = True
-        s_list = [x.strip() for x in sessions_txt.split('\n') if x.strip()]
-        l_list = [x.strip() for x in links_txt.split('\n') if x.strip()]
-        p_list = [x.strip() for x in proxies_txt.split('\n') if x.strip()]
-        r_data = REPORT_MAP[report_opt]
-        
-        # تشغيل الهجوم في Thread مستقل لضمان عدم تعليق المتصفح
-        threading.Thread(target=run_infinite_attack, args=(s_list, l_list, r_data, p_list), daemon=True).start()
-    else:
-        st.error("⚠️ خطأ: السيزنات أو الروابط مفقودة!")
+col_sidebar, col_main = st.columns([1, 3])
 
-if b2.button("🛑 إيقاف الهجوم فوراً"):
-    st.session_state.attack_running = False
+with col_sidebar:
+    st.markdown("### ⚙️ الإعدادات")
+    target_user_input = st.text_input("👤 يوزر المستهدف")
+    report_kind = st.selectbox("🚫 نوع البلاغ", [
+        "90087 (محتوى جنسي)", "90044 (عنف)", "90045 (تحرش)", "90053 (احتيال)", "90055 (تقليد شخصية)"
+    ])
+    
+    REPORT_DATA = {
+        "90087 (محتوى جنسي)": {"reason": "90087", "category": "porn"},
+        "90044 (عنف)": {"reason": "90044", "category": "violence"},
+        "90045 (تحرش)": {"reason": "90045", "category": "hate"},
+        "90053 (احتيال)": {"reason": "90053", "category": "scam"},
+        "90055 (تقليد شخصية)": {"reason": "90055", "category": "impersonation"}
+    }
 
-# 5. عرض النتائج المباشرة (Live Monitoring)
+with col_main:
+    st.markdown("<div class='report-card'>", unsafe_allow_html=True)
+    c1, c2, c3 = st.columns(3)
+    sess_area = c1.text_area("🔑 لصق السيزنات", height=250, placeholder="سيزن في كل سطر...")
+    prox_area = c2.text_area("🌐 لصق البروكسيات", height=250, placeholder="IP:Port")
+    link_area = c3.text_area("🔗 روابط الفيديوهات", height=250, placeholder="رابط في كل سطر...")
+    st.markdown("</div>", unsafe_allow_html=True)
+
+    btn_start, btn_stop = st.columns(2)
+    
+    if btn_start.button("🔥 إطلاق الهجوم المستمر"):
+        if sess_area and link_area:
+            st.session_state.running = True
+            s_list = [x.strip() for x in sess_area.split('\n') if x.strip()]
+            l_list = [x.strip() for x in link_area.split('\n') if x.strip()]
+            p_list = [x.strip() for x in prox_area.split('\n') if x.strip()]
+            
+            # تشغيل الهجوم في Thread مستقل تماماً كما في بايثون لضمان القوة
+            threading.Thread(target=continuous_loop, args=(s_list, l_list, REPORT_DATA[report_kind], p_list), daemon=True).start()
+        else:
+            st.error("⚠️ يرجى إدخال السيزنات والروابط أولاً!")
+
+    if btn_stop.button("🛑 إيقاف الهجوم فوراً"):
+        st.session_state.running = False
+
 st.markdown("---")
-st.write(f"### 📊 الإحصائيات الحية")
-res_col1, res_col2 = st.columns(2)
-res_col1.metric("ناجح ✅", st.session_state.ok)
-res_col2.metric("فاشل ❌", st.session_state.bad)
+st.write(f"## 📊 النتائج المباشرة")
+col_res1, col_res2 = st.columns(2)
+col_res1.metric("✅ بلاغات ناجحة", st.session_state.ok)
+col_res2.metric("❌ بلاغات فاشلة", st.session_state.bad)
 
-if st.session_state.attack_running:
-    st.markdown("<h3 style='color:green; text-align:center;'>⚡ الهجوم جارٍ الآن في الخلفية...</h3>", unsafe_allow_html=True)
+if st.session_state.running:
+    st.warning("⚡ الهجوم جارٍ الآن في الخلفية بدون توقف...")
     time.sleep(1)
-    st.rerun() # إعادة تشغيل الواجهة لتحديث العدادات
+    st.rerun() # تحديث الواجهة لرؤية العدادات تزيد
+
