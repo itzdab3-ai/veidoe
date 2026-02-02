@@ -1,4 +1,5 @@
+streamlit
 requests
-PyCryptor
+MedoSigner
 pycryptodome
-pycryptodomex
+urllib3
