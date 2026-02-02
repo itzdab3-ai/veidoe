@@ -1,5 +1,5 @@
 streamlit
 requests
-MedoSigner
-pycryptodome
-urllib3
+termcolor
+pyfiglet
+pysocks
